@@ -1,0 +1,22 @@
+[
+  {
+    "id": "baridimob_default",
+    "name": "BaridiMob",
+    "type": "BARIDIMOB",
+    "currency": "DZD",
+    "accountName": "Store Owner",
+    "accountNumber": "00799999000000000000",
+    "instructions": "قم بإرسال المبلغ عبر بريدي موب وإرفاق صورة الوصل.",
+    "active": true
+  },
+  {
+    "id": "usdt_default",
+    "name": "Binance USDT",
+    "type": "BINANCE_PAY",
+    "currency": "USDT",
+    "accountName": "USDT Pay",
+    "accountNumber": "binance_id_or_trc20",
+    "instructions": "Send USDT (TRC20 or Binance Pay) and submit screenshot.",
+    "active": true
+  }
+]

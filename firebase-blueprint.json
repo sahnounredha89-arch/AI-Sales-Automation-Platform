@@ -1,0 +1,195 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A digital product offered for sale",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 200, "description": "Product display name" },
+        "shortDescription": { "type": "string", "maxLength": 500, "description": "Summary description" },
+        "fullDescription": { "type": "string", "maxLength": 5000, "description": "Comprehensive product information" },
+        "priceDZD": { "type": "number", "description": "Price in Algerian Dinars" },
+        "priceUSDT": { "type": "number", "description": "Price in USDT crypto" },
+        "duration": { "type": "string", "maxLength": 100, "description": "Subscription duration or validity" },
+        "features": { "type": "array", "description": "List of feature highlights" },
+        "faq": { "type": "array", "description": "Frequently asked questions" },
+        "deliveryInfo": { "type": "string", "maxLength": 2000, "description": "Delivery turnaround and method" },
+        "aiSalesInstructions": { "type": "string", "maxLength": 3000, "description": "Specific guidance for Gemini sales agent" },
+        "imageUrl": { "type": "string", "maxLength": 1000, "description": "URL of product graphic" },
+        "active": { "type": "boolean", "description": "Whether product is currently available" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["name", "priceDZD", "priceUSDT", "active"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "A prospect or purchasing customer across messaging channels",
+      "type": "object",
+      "properties": {
+        "platform": { "type": "string", "enum": ["messenger", "instagram", "telegram", "web"], "description": "Origin channel" },
+        "platformUserId": { "type": "string", "maxLength": 128, "description": "Platform specific user ID" },
+        "name": { "type": "string", "maxLength": 200, "description": "Customer name" },
+        "username": { "type": "string", "maxLength": 100, "description": "Handle or username" },
+        "phone": { "type": "string", "maxLength": 50, "description": "Phone number" },
+        "language": { "type": "string", "maxLength": 20, "description": "Detected conversation language" },
+        "preferredLanguage": { "type": "string", "maxLength": 20, "description": "Explicit language preference" },
+        "status": { "type": "string", "enum": ["lead", "prospect", "customer", "blocked"], "description": "Customer lifecycle status" },
+        "tags": { "type": "array", "description": "Segment tags" },
+        "notes": { "type": "string", "maxLength": 2000, "description": "Admin notes" },
+        "firstContactAt": { "type": "string", "format": "date-time", "description": "First contact timestamp" },
+        "lastContactAt": { "type": "string", "format": "date-time", "description": "Last message timestamp" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["platform", "platformUserId", "name"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "A communication thread with a customer",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string", "maxLength": 128, "description": "Linked customer ID" },
+        "platform": { "type": "string", "enum": ["messenger", "instagram", "telegram", "web"], "description": "Messaging platform" },
+        "platformConversationId": { "type": "string", "maxLength": 128, "description": "Channel specific conversation ID" },
+        "campaignId": { "type": "string", "maxLength": 128, "description": "Marketing campaign tracker" },
+        "productId": { "type": "string", "maxLength": 128, "description": "Currently discussed product" },
+        "status": { "type": "string", "enum": ["active", "waiting_admin", "resolved", "closed"], "description": "Thread status" },
+        "assignedTo": { "type": "string", "maxLength": 128, "description": "Admin assigned to conversation" },
+        "aiEnabled": { "type": "boolean", "description": "Whether AI responds to incoming messages" },
+        "humanHandoff": { "type": "boolean", "description": "Whether human admin took over" },
+        "lastMessageAt": { "type": "string", "format": "date-time", "description": "Last activity timestamp" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["customerId", "platform", "aiEnabled", "humanHandoff"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "An individual message within a conversation thread",
+      "type": "object",
+      "properties": {
+        "direction": { "type": "string", "enum": ["incoming", "outgoing"], "description": "Message direction" },
+        "sender": { "type": "string", "maxLength": 100, "description": "Sender label (Customer, AI Assistant, Admin)" },
+        "type": { "type": "string", "enum": ["text", "image", "voice", "document"], "description": "Payload type" },
+        "text": { "type": "string", "maxLength": 10000, "description": "Text content" },
+        "transcription": { "type": "string", "maxLength": 5000, "description": "Transcribed voice content" },
+        "mediaUrl": { "type": "string", "maxLength": 1000, "description": "URL of attachment" },
+        "platformMessageId": { "type": "string", "maxLength": 128, "description": "Platform message ID for idempotency" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Message timestamp" },
+        "metadata": { "type": "object", "description": "Channel specific metadata" }
+      },
+      "required": ["direction", "sender", "type", "timestamp"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A customer purchase order with strict pricing snapshot",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string", "maxLength": 128, "description": "Customer ID" },
+        "conversationId": { "type": "string", "maxLength": 128, "description": "Originating conversation ID" },
+        "productId": { "type": "string", "maxLength": 128, "description": "Product ID" },
+        "productNameSnapshot": { "type": "string", "maxLength": 200, "description": "Product name snapshot at purchase time" },
+        "amount": { "type": "number", "description": "Agreed price amount" },
+        "currency": { "type": "string", "enum": ["DZD", "USDT"], "description": "Currency of payment" },
+        "paymentMethod": { "type": "string", "maxLength": 100, "description": "Selected method (BaridiMob, CCP, RedotPay)" },
+        "paymentStatus": { "type": "string", "enum": ["NOT_STARTED", "PENDING", "WAITING_FOR_VERIFICATION", "VERIFIED", "REJECTED"], "description": "Payment verification state" },
+        "orderStatus": { "type": "string", "enum": ["NEW", "PAYMENT_PENDING", "WAITING_FOR_VERIFICATION", "PAID", "DELIVERED", "CANCELLED", "REFUNDED"], "description": "Fulfillment state" },
+        "paymentProofUrls": { "type": "array", "description": "Submitted payment receipt image/document URLs" },
+        "notes": { "type": "string", "maxLength": 2000, "description": "Admin or delivery notes" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Order creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" },
+        "verifiedAt": { "type": "string", "format": "date-time", "description": "Admin payment verification timestamp" },
+        "deliveredAt": { "type": "string", "format": "date-time", "description": "Product delivery timestamp" },
+        "verifiedBy": { "type": "string", "maxLength": 100, "description": "Admin who verified payment" },
+        "deliveredBy": { "type": "string", "maxLength": 100, "description": "Admin who completed delivery" }
+      },
+      "required": ["customerId", "productId", "productNameSnapshot", "amount", "currency", "paymentMethod", "paymentStatus", "orderStatus"]
+    },
+    "PaymentMethod": {
+      "title": "PaymentMethod",
+      "description": "A payment account option configured for customer transactions",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100, "description": "Method title (e.g. BaridiMob, CCP, RedotPay)" },
+        "currency": { "type": "string", "enum": ["DZD", "USDT"], "description": "Required currency for method" },
+        "instructions": { "type": "string", "maxLength": 2000, "description": "Account number, RIP, or wallet address and instructions" },
+        "active": { "type": "boolean", "description": "Whether this payment method is offered to customers" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["name", "currency", "instructions", "active"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "System or section configuration parameters",
+      "type": "object",
+      "properties": {
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      }
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable security log of administrative actions",
+      "type": "object",
+      "properties": {
+        "actor": { "type": "string", "maxLength": 100, "description": "Admin identifier" },
+        "action": { "type": "string", "maxLength": 100, "description": "Action name" },
+        "targetType": { "type": "string", "maxLength": 50, "description": "Entity category" },
+        "targetId": { "type": "string", "maxLength": 128, "description": "Entity ID" },
+        "metadata": { "type": "object", "description": "Contextual details" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Action timestamp" }
+      },
+      "required": ["actor", "action", "timestamp"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized administrative user record",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "description": "Admin email address" },
+        "role": { "type": "string", "enum": ["admin", "superadmin"], "description": "Role level" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Catalog of digital products"
+    },
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Customer profiles across connected channels"
+    },
+    "/conversations/{conversationId}": {
+      "schema": "Conversation",
+      "description": "Active and archived customer conversation threads"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages exchanged in a customer thread"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer purchase orders with verification tracking"
+    },
+    "/paymentMethods/{paymentMethodId}": {
+      "schema": "PaymentMethod",
+      "description": "Configured payment receiving methods"
+    },
+    "/settings/{settingId}": {
+      "schema": "Setting",
+      "description": "Global application configuration documents"
+    },
+    "/auditLogs/{auditLogId}": {
+      "schema": "AuditLog",
+      "description": "Append-only administrative activity records"
+    },
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Administrative access whitelist"
+    }
+  }
+}

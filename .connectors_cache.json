@@ -1,0 +1,32 @@
+[
+  {
+    "id": "instagram",
+    "type": "instagram",
+    "platform": "instagram",
+    "name": "Instagram (Dokuni Shop)",
+    "pageId": "110414661460391",
+    "pageName": "Dokuni Shop",
+    "igAccountId": null,
+    "igUsername": null,
+    "status": "connected",
+    "messagingPermission": "ready",
+    "messagingStatus": "ready",
+    "connectedAt": "2026-09-11T21:37:25.511Z",
+    "tokenMasked": "EAARUqn0...voZD"
+  },
+  {
+    "id": "messenger",
+    "type": "messenger",
+    "platform": "facebook",
+    "name": "Dokuni Shop",
+    "pageId": "110414661460391",
+    "pageName": "Dokuni Shop",
+    "igAccountId": null,
+    "igUsername": null,
+    "status": "connected",
+    "messagingPermission": "ready",
+    "messagingStatus": "ready",
+    "connectedAt": "2026-09-13T09:19:04.106Z",
+    "tokenMasked": "EAARUqn0...voZD"
+  }
+]

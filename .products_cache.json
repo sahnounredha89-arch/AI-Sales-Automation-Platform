@@ -1,0 +1,35 @@
+[
+  {
+    "id": "gemini_pro",
+    "name": "Gemini Pro",
+    "description": "اشتراك رسمي لمدة عام كامل في خدمة الذكاء الاصطناعي الأكثر تطوراً من جوجل.",
+    "priceDZD": 4500,
+    "priceUSDT": 20,
+    "active": true,
+    "category": "AI Tools",
+    "deliveryType": "INSTANT_CODE",
+    "createdAt": "2026-09-14T21:53:53.697Z"
+  },
+  {
+    "id": "capcut_pro",
+    "name": "CapCut Pro",
+    "description": "اشتراك رسمي في برنامج كاب كات برو لتحرير الفيديو الاحترافي.",
+    "priceDZD": 3500,
+    "priceUSDT": 15,
+    "active": true,
+    "category": "Editing",
+    "deliveryType": "MANUAL_DELIVERY",
+    "createdAt": "2026-09-14T21:53:53.697Z"
+  },
+  {
+    "id": "canva_pro",
+    "name": "Canva Pro",
+    "description": "اشتراك كانفا برو بكافة القوالب والميزات الاحترافية لتصميم المحتوى.",
+    "priceDZD": 3000,
+    "priceUSDT": 14,
+    "active": true,
+    "category": "Design",
+    "deliveryType": "MANUAL_DELIVERY",
+    "createdAt": "2026-09-14T21:53:53.697Z"
+  }
+]

@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net (Catch-All Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common Security Helpers
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Master Admin Gate: bootstrapped to runtime admin email and administrative collection
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'sahnounredha89@gmail.com' ||
+        request.auth.token.admin == true ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Entity Validators
+    function isValidProduct(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+             data.priceDZD is number && data.priceDZD >= 0 &&
+             data.priceUSDT is number && data.priceUSDT >= 0 &&
+             data.active is bool;
+    }
+
+    function isValidPaymentMethod(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.currency in ['DZD', 'USDT'] &&
+             data.instructions is string && data.instructions.size() <= 2000 &&
+             data.active is bool;
+    }
+
+    function isValidOrder(data) {
+      return data.customerId is string && data.customerId.size() <= 128 &&
+             data.productId is string && data.productId.size() <= 128 &&
+             data.productNameSnapshot is string && data.productNameSnapshot.size() <= 200 &&
+             data.amount is number && data.amount >= 0 &&
+             data.currency in ['DZD', 'USDT'] &&
+             data.paymentMethod is string && data.paymentMethod.size() <= 100 &&
+             data.paymentStatus in ['NOT_STARTED', 'PENDING', 'WAITING_FOR_VERIFICATION', 'VERIFIED', 'REJECTED'] &&
+             data.orderStatus in ['NEW', 'PAYMENT_PENDING', 'WAITING_FOR_VERIFICATION', 'PAID', 'DELIVERED', 'CANCELLED', 'REFUNDED'];
+    }
+
+    // Products Catalog
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(productId) && isValidProduct(incoming());
+      allow update: if isAdmin() && isValidId(productId) && isValidProduct(incoming());
+      allow delete: if isAdmin() && isValidId(productId);
+    }
+
+    // Payment Methods
+    match /paymentMethods/{paymentMethodId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(paymentMethodId) && isValidPaymentMethod(incoming());
+      allow update: if isAdmin() && isValidId(paymentMethodId) && isValidPaymentMethod(incoming());
+      allow delete: if isAdmin() && isValidId(paymentMethodId);
+    }
+
+    // Customers
+    match /customers/{customerId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && isValidId(customerId);
+    }
+
+    // Conversations & Messages
+    match /conversations/{conversationId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && isValidId(conversationId);
+      match /messages/{messageId} {
+        allow read: if isAdmin();
+        allow write: if isAdmin() && isValidId(messageId);
+      }
+    }
+
+    // Orders
+    match /orders/{orderId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && isValidId(orderId) && isValidOrder(incoming());
+      allow update: if isAdmin() && isValidId(orderId) && isValidOrder(incoming());
+      allow delete: if isAdmin() && isValidId(orderId);
+    }
+
+    // Settings
+    match /settings/{settingId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && isValidId(settingId);
+    }
+
+    // Audit Logs
+    match /auditLogs/{auditLogId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && isValidId(auditLogId);
+      allow update, delete: if false; // Audit logs are strictly immutable
+    }
+
+    // Admins
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && isValidId(adminId);
+      allow write: if isAdmin() && isValidId(adminId);
+    }
+  }
+}

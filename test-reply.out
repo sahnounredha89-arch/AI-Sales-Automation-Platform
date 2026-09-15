@@ -1,0 +1,32 @@
+[ConversationStore] Loaded 32 conversations and messages from local cache.
+✅ Firebase Admin successfully initialized for project: ai-sales-automation-ada3a
+[IDEMPOTENCY] claimed messageId=mid.124
+[QUEUE] lock acquired for messenger_12345
+[GEMINI] generation started for messenger_12345
+[GEMINI] generation_started=true
+[GEMINI] START messageId=mid.124
+[Meta Service] Sender action failed: {
+  error: {
+    message: '(#100) Parameter error: You cannot send messages to this id',
+    type: 'OAuthException',
+    code: 100,
+    fbtrace_id: 'Aj1NlP77DhDXvKB87qT906r'
+  }
+}
+[Meta Service] Sender action failed: {
+  error: {
+    message: '(#100) Parameter error: You cannot send messages to this id',
+    type: 'OAuthException',
+    code: 100,
+    fbtrace_id: 'AVLDBtDQ5NSCVdyUVh__618'
+  }
+}
+Generating sales response...
+[GEMINI] [mid.124] primary model=gemini-flash-latest
+[GEMINI] [mid.124] request started
+[GEMINI] [mid.124] model=gemini-flash-latest eligible error (SERVER_503) - applying 45s cooldown
+[GEMINI] [mid.124] falling back to gemini-3.8-flash
+[GEMINI] [mid.124] request started
+[GEMINI] [mid.124] model=gemini-3.8-flash eligible error (SERVER_503) - applying 45s cooldown
+[GEMINI] [mid.124] falling back to gemini-3.1-flash-lite
+[GEMINI] [mid.124] request started
